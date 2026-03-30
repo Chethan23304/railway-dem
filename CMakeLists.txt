@@ -74,3 +74,19 @@ add_executable(rail_ecu
     bsw/dcm/src/Dcm.c
 )
 target_include_directories(rail_ecu PRIVATE bsw/dcm/include bsw/nvm/include)
+
+# Unity unit tests
+enable_testing()
+
+add_executable(test_dem
+    tests/unit/test_dem.c
+    tests/unity/unity.c
+    ${DEM_SOURCES}
+    ${NVM_SOURCES}
+)
+target_include_directories(test_dem PRIVATE
+    tests/unity
+    bsw/dem/include
+    bsw/nvm/include
+)
+add_test(NAME DEM_Unit_Tests COMMAND test_dem)

@@ -1,0 +1,75 @@
+name: Railway DEM CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            gcc \
+            cmake \
+            make \
+            cppcheck \
+            lcov
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build all targets
+        run: cmake --build build --parallel 4
+
+      - name: Run unit tests
+        run: cd build && ctest --output-on-failure
+
+      - name: Static analysis
+        run: |
+          cppcheck \
+            --error-exitcode=1 \
+            --enable=warning,style \
+            --suppress=missingIncludeSystem \
+            -I bsw/dem/include \
+            -I bsw/can/include \
+            -I bsw/nvm/include \
+            -I bsw/dcm/include \
+            bsw/dem/src/ \
+            bsw/can/src/ \
+            bsw/nvm/src/ \
+            bsw/dcm/src/ \
+            app/
+
+      - name: Generate coverage report
+        run: |
+          cmake -B build_cov \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_C_FLAGS="--coverage"
+          cmake --build build_cov --parallel 4
+          cd build_cov && ctest
+          lcov --capture \
+            --directory . \
+            --output-file coverage.info \
+            --ignore-errors mismatch
+          lcov --remove coverage.info \
+            '/usr/*' '*/tests/unity/*' \
+            --output-file coverage_filtered.info
+          genhtml coverage_filtered.info \
+            --output-directory coverage_html
+          lcov --summary coverage_filtered.info
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: build_cov/coverage_html/
+          
