@@ -127,7 +127,7 @@ int main(void)
     printf("--- Running 2 clean cycles (no faults) ---\n\n");
     for (cycle = 0U; cycle < 2U; cycle++)
     {
-        printf("[Cycle %d]\n", cycle + 1U);
+        printf("[Cycle %u]\n", cycle + 1U);
         System_RunMainFunctions();
     }
 
@@ -135,10 +135,10 @@ int main(void)
     System_InjectFaults();
 
     /* Run fault cycles */
-    printf("\n--- Running %d fault cycles ---\n\n", MAIN_LOOP_CYCLES);
+    printf("\n--- Running %u fault cycles ---\n\n", MAIN_LOOP_CYCLES);
     for (cycle = 0U; cycle < MAIN_LOOP_CYCLES; cycle++)
     {
-        printf("[Cycle %d]\n", cycle + 1U);
+        printf("[Cycle %u]\n", cycle + 1U);
         System_RunMainFunctions();
         sleep(1);
     }
