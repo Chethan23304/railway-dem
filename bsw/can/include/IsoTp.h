@@ -17,6 +17,6 @@ typedef struct {
 } IsoTp_MessageType;
 
 Std_ReturnType IsoTp_Send(uint32_t can_id, const uint8_t *data, uint16_t len);
-Std_ReturnType IsoTp_Receive(IsoTp_MessageType *msg, int timeout_ms);
+Std_ReturnType IsoTp_Receive(IsoTp_MessageType *msg, int timeout_ms, uint32_t rx_filter);
 
 #endif /* ISOTP_H */

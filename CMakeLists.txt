@@ -48,3 +48,20 @@ add_executable(rail_dem
     ${DEM_SOURCES}
     ${CAN_SOURCES}
 )
+
+# ECU server executable (DEM + DCM + SW-Components + CAN-UDP)
+add_executable(rail_ecu
+    app/diag_app/ecu_main.c
+    ${ASW_SOURCES}
+    ${DEM_SOURCES}
+    ${CAN_SOURCES}
+    bsw/dcm/src/Dcm.c
+)
+target_include_directories(rail_ecu PRIVATE bsw/dcm/include)
+
+# UDS tester tool
+add_executable(uds_tester
+    scripts/uds_tester.c
+    ${CAN_SOURCES}
+)
+target_include_directories(uds_tester PRIVATE bsw/dem/include)
