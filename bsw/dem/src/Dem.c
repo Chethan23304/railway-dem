@@ -104,7 +104,7 @@ void Dem_Init(void)
     Dem_EventMemoryCount = 0U;
     Dem_State            = DEM_INITIALIZED;
 
-    printf("[DEM] Initialized - %d event slots, %d events configured\n",
+    printf("[DEM] Initialized - %u event slots, %u events configured\n",
            DEM_MAX_EVENT_MEMORY, DEM_NUM_EVENTS);
 }
 
