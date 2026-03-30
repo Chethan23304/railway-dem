@@ -342,3 +342,65 @@ Std_ReturnType Dem_GetNumberOfFilteredDTC(Dem_FilterType *Filter,
     *NumberOfFilteredDTC = count;
     return E_OK;
 }
+
+#include "NvM.h"
+
+void Dem_NvM_StoreEventMemory(void)
+{
+    uint8_t  buffer[NVM_MAX_BLOCK_SIZE];
+    uint16_t offset = 0U;
+    uint8_t  i;
+
+    buffer[offset++] = Dem_EventMemoryCount;
+    for (i = 0U; i < Dem_EventMemoryCount; i++)
+    {
+        buffer[offset++] = (uint8_t)(Dem_EventMemory[i].eventId & 0xFFU);
+        buffer[offset++] = (uint8_t)((Dem_EventMemory[i].dtc >> 16U) & 0xFFU);
+        buffer[offset++] = (uint8_t)((Dem_EventMemory[i].dtc >>  8U) & 0xFFU);
+        buffer[offset++] = (uint8_t)( Dem_EventMemory[i].dtc         & 0xFFU);
+        buffer[offset++] = Dem_EventMemory[i].udsStatusByte;
+        buffer[offset++] = Dem_EventMemory[i].occurrenceCounter;
+        if (offset >= (uint16_t)(NVM_MAX_BLOCK_SIZE - 6U)) break;
+    }
+    NvM_WriteBlock(NVM_BLOCK_DEM_PRIMARY, buffer, offset);
+    printf("[DEM] Event memory stored (%d entries)\n", Dem_EventMemoryCount);
+}
+
+void Dem_NvM_RestoreEventMemory(void)
+{
+    uint8_t  buffer[NVM_MAX_BLOCK_SIZE];
+    uint16_t offset = 0U;
+    uint8_t  count;
+    uint8_t  i;
+    uint8_t  cfgIdx;
+
+    if (NvM_ReadBlock(NVM_BLOCK_DEM_PRIMARY, buffer, NVM_MAX_BLOCK_SIZE) != E_OK)
+        return;
+
+    count = buffer[offset++];
+    if (count > DEM_MAX_EVENT_MEMORY) count = DEM_MAX_EVENT_MEMORY;
+
+    for (i = 0U; i < count; i++)
+    {
+        uint16_t eventId = buffer[offset++];
+        uint32_t dtc     = ((uint32_t)buffer[offset]   << 16U) |
+                           ((uint32_t)buffer[offset+1] <<  8U) |
+                            (uint32_t)buffer[offset+2];
+        offset += 3U;
+        uint8_t uds_byte = buffer[offset++];
+        uint8_t occ      = buffer[offset++];
+
+        Dem_EventMemory[i].eventId           = eventId;
+        Dem_EventMemory[i].dtc               = dtc;
+        Dem_EventMemory[i].udsStatusByte     = uds_byte;
+        Dem_EventMemory[i].occurrenceCounter = occ;
+        Dem_EventMemory[i].currentStatus     = DEM_EVENT_STATUS_FAILED;
+
+        cfgIdx = Dem_GetCfgIndex((Dem_EventIdType)eventId);
+        if (cfgIdx != 0xFFU)
+            Dem_UdsStatusTable[cfgIdx] = uds_byte;
+
+        Dem_EventMemoryCount++;
+        printf("[DEM] Restored DTC=0x%06X occurrences=%d\n", dtc, occ);
+    }
+}

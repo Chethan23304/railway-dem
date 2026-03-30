@@ -13,6 +13,7 @@
 #include "signal_monitor.h"
 #include "hvac_monitor.h"
 #include "power_monitor.h"
+#include "NvM.h"
 
 static volatile int running = 1;
 
@@ -34,8 +35,11 @@ int main(void)
 
     /* Init all modules */
     if (Can_Udp_Init() != 0) return 1;
+    NvM_Init();
     Dem_Init();
+    Dem_NvM_RestoreEventMemory();
     Dcm_Init();
+
 
     BrakeMonitor_Init();
     DoorLockMonitor_Init();
@@ -74,6 +78,7 @@ int main(void)
     }
 
     printf("\n[ECU] Shutting down\n");
+    Dem_NvM_StoreEventMemory();
     Can_Udp_DeInit();
     return 0;
 }

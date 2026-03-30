@@ -8,6 +8,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic")
 include_directories(
     bsw/dem/include
     bsw/can/include
+    bsw/nvm/include
+    bsw/dcm/include
     app/brake_monitor
     app/door_lock_monitor
     app/temperature_monitor
@@ -29,6 +31,10 @@ set(CAN_SOURCES
     bsw/can/src/IsoTp.c
 )
 
+set(NVM_SOURCES
+    bsw/nvm/src/NvM.c
+)
+
 # Application SW-Components
 set(ASW_SOURCES
     app/brake_monitor/brake_monitor.c
@@ -46,18 +52,11 @@ add_executable(rail_dem
     app/diag_app/main.c
     ${ASW_SOURCES}
     ${DEM_SOURCES}
+    ${NVM_SOURCES}
     ${CAN_SOURCES}
 )
 
-# ECU server executable (DEM + DCM + SW-Components + CAN-UDP)
-add_executable(rail_ecu
-    app/diag_app/ecu_main.c
-    ${ASW_SOURCES}
-    ${DEM_SOURCES}
-    ${CAN_SOURCES}
-    bsw/dcm/src/Dcm.c
-)
-target_include_directories(rail_ecu PRIVATE bsw/dcm/include)
+
 
 # UDS tester tool
 add_executable(uds_tester
@@ -65,3 +64,13 @@ add_executable(uds_tester
     ${CAN_SOURCES}
 )
 target_include_directories(uds_tester PRIVATE bsw/dem/include)
+
+add_executable(rail_ecu
+    app/diag_app/ecu_main.c
+    ${ASW_SOURCES}
+    ${DEM_SOURCES}
+    ${NVM_SOURCES}
+    ${CAN_SOURCES}
+    bsw/dcm/src/Dcm.c
+)
+target_include_directories(rail_ecu PRIVATE bsw/dcm/include bsw/nvm/include)

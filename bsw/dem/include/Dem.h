@@ -71,6 +71,8 @@ typedef struct {
 /* Public API */
 void           Dem_Init(void);
 void           Dem_MainFunction(void);
+void Dem_NvM_StoreEventMemory(void);
+void Dem_NvM_RestoreEventMemory(void);
 
 Std_ReturnType Dem_SetEventStatus(Dem_EventIdType EventId,
                                    Dem_EventStatusType EventStatus);
