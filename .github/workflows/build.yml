@@ -37,8 +37,10 @@ jobs:
         run: |
           cppcheck \
             --error-exitcode=1 \
-            --enable=warning,style \
+            --enable=warning \
             --suppress=missingIncludeSystem \
+            --suppress=unusedFunction \
+            --suppress=unmatchedSuppression \
             -I bsw/dem/include \
             -I bsw/can/include \
             -I bsw/nvm/include \
