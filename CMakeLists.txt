@@ -90,3 +90,23 @@ target_include_directories(test_dem PRIVATE
     bsw/nvm/include
 )
 add_test(NAME DEM_Unit_Tests COMMAND test_dem)
+# Terminal UI
+add_executable(dem_tui
+    app/diag_app/dem_tui.c
+    ${ASW_SOURCES}
+    ${DEM_SOURCES}
+    ${NVM_SOURCES}
+)
+target_include_directories(dem_tui PRIVATE
+    bsw/dem/include
+    bsw/nvm/include
+    app/brake_monitor
+    app/door_lock_monitor
+    app/temperature_monitor
+    app/motor_controller_monitor
+    app/comms_monitor
+    app/signal_monitor
+    app/hvac_monitor
+    app/power_monitor
+)
+target_link_libraries(dem_tui ncurses)
