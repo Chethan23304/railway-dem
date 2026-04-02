@@ -14,6 +14,9 @@
 #include "hvac_monitor.h"
 #include "power_monitor.h"
 #include "NvM.h"
+#include "Kavach_Bridge.h"
+#include "DemLog.h"
+#include "EvtLog.h"
 
 static volatile int running = 1;
 
@@ -38,6 +41,9 @@ int main(void)
     NvM_Init();
     Dem_Init();
     Dem_NvM_RestoreEventMemory();
+    DemLog_Init();
+    EvtLog_Init();
+    Kavach_Bridge_Init();
     Dcm_Init();
 
 
@@ -75,10 +81,14 @@ int main(void)
     while (running)
     {
         Dcm_MainFunction();
+        Kavach_Bridge_MainFunction();
     }
 
     printf("\n[ECU] Shutting down\n");
     Dem_NvM_StoreEventMemory();
+    Kavach_Bridge_DeInit();
+    EvtLog_Close();
+    DemLog_Close();
     Can_Udp_DeInit();
     return 0;
 }

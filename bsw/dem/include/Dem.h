@@ -26,6 +26,9 @@ typedef uint8_t  Dem_DTCStatusMaskType;
 /* DTC group for ClearDTC */
 #define DEM_DTC_GROUP_ALL      (0xFFFFFFU)
 
+/* Event range for validation */
+#define DEM_EVENT_ID_MAX       (0x00B3U)
+
 /* Event memory size */
 #define DEM_MAX_EVENT_MEMORY   (8U)
 

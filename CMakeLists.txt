@@ -110,3 +110,61 @@ target_include_directories(dem_tui PRIVATE
     app/power_monitor
 )
 target_link_libraries(dem_tui ncurses)
+
+set(KAVACH_SOURCES
+    bsw/kavach/src/Kavach_Bridge.c
+    bsw/dem/src/DemLog.c
+    bsw/dem/src/EvtLog.c
+)
+
+add_executable(rail_kavach
+    app/diag_app/ecu_main.c
+    ${ASW_SOURCES}
+    ${DEM_SOURCES}
+    ${NVM_SOURCES}
+    ${CAN_SOURCES}
+    ${KAVACH_SOURCES}
+    bsw/dcm/src/Dcm.c
+)
+target_include_directories(rail_kavach PRIVATE
+    bsw/dem/include
+    bsw/nvm/include
+    bsw/dcm/include
+    bsw/can/include
+    bsw/kavach/include
+    app/brake_monitor
+    app/door_lock_monitor
+    app/temperature_monitor
+    app/motor_controller_monitor
+    app/comms_monitor
+    app/signal_monitor
+    app/hvac_monitor
+    app/power_monitor
+)
+target_link_libraries(rail_kavach sqlite3)
+
+# Kavach Ethernet sources
+set(KAVACH_ETH_SOURCES
+    bsw/kavach/src/Kavach_Bridge.c
+    bsw/kavach/src/Kavach_Eth.c
+    bsw/dem/src/DemLog.c
+    bsw/dem/src/EvtLog.c
+)
+
+# Demo executable for Kavach DMI integration
+add_executable(rail_kavach_demo
+    app/diag_app/ecu_kavach_main.c
+    ${DEM_SOURCES}
+    ${NVM_SOURCES}
+    ${CAN_SOURCES}
+    ${KAVACH_ETH_SOURCES}
+    bsw/dcm/src/Dcm.c
+)
+target_include_directories(rail_kavach_demo PRIVATE
+    bsw/dem/include
+    bsw/nvm/include
+    bsw/dcm/include
+    bsw/can/include
+    bsw/kavach/include
+)
+target_link_libraries(rail_kavach_demo sqlite3)

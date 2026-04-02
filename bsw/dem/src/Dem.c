@@ -143,7 +143,7 @@ Std_ReturnType Dem_SetEventStatus(Dem_EventIdType EventId,
         return E_NOT_OK;
     }
 
-    if ((EventId < DEM_FIRST_EVENT_ID) || (EventId > DEM_LAST_EVENT_ID))
+    if ((EventId < DEM_FIRST_EVENT_ID) || (EventId > DEM_EVENT_ID_MAX))
     {
         printf("[DEM] ERROR: Invalid EventId %d\n", EventId);
         return E_NOT_OK;
@@ -224,7 +224,7 @@ Std_ReturnType Dem_GetEventStatus(Dem_EventIdType EventId,
 
     if (Dem_State != DEM_INITIALIZED) return E_NOT_OK;
     if (EventStatusByte == NULL_PTR)  return E_NOT_OK;
-    if ((EventId < DEM_FIRST_EVENT_ID) || (EventId > DEM_LAST_EVENT_ID))
+    if ((EventId < DEM_FIRST_EVENT_ID) || (EventId > DEM_EVENT_ID_MAX))
         return E_NOT_OK;
 
     cfgIdx = Dem_GetCfgIndex(EventId);
