@@ -30,6 +30,7 @@ set(CAN_SOURCES
 set(KAVACH_SOURCES
     bsw/kavach/src/Kavach_Bridge.c
     bsw/kavach/src/Kavach_Eth.c
+    bsw/kavach/src/Kavach_Conditions.c
 )
 
 # Kavach DMI demo - main executable
