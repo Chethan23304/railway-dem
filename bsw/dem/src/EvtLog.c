@@ -37,19 +37,7 @@ static const char *get_kavach_event_name(uint16_t id)
     }
 }
 
-static const char *severity_str[16] = {
-    "UNKNOWN",
-    "HIGH","HIGH","MEDIUM","HIGH","MEDIUM",
-    "MEDIUM","LOW","HIGH","HIGH","HIGH",
-    "MEDIUM","HIGH","MEDIUM","MEDIUM","HIGH"
-};
 
-static const char *transport_str[16] = {
-    "UNKNOWN",
-    "CAN","CAN","CAN","CAN","CAN",
-    "CAN","CAN","CAN","CAN","CAN",
-    "CAN","CAN","Ethernet","Ethernet","CAN"
-};
 
 static void get_ts(char *buf, size_t len)
 {

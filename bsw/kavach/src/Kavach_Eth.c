@@ -1,4 +1,5 @@
 #include "Kavach_Eth.h"
+#include "EvtLog.h"
 #include "Dem.h"
 #include "Dem_EventConfig.h"
 #include <stdio.h>
